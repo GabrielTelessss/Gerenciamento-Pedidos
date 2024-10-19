@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./src/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Gerenciamento De Pedidos</h1>
+        <button id="btnNewOrder">Iniciar Novo Pedido</button>
+    </header>
+
+    <main>
+        <section id="orderSection">
+            <h2>Pedidos</h2>
+            <ul id="ordersList">
+            </ul>
+        </section>
+
+        <section id="orderDetalisSection" style="display: none;">
+            <h2>Detalhes do Pedido</h2>
+            <p id="orderStatus"></p>
+            <input type="text" name="" id="productNome" placeholder="Nome Do Pedido">
+            <input type="text" name="" id="productDescription" placeholder="Descrição do Produto">
+            <button id="btnAddProduct">Adicionar Produto</button>
+            <ul id="productsList"></ul>
+            <button id="btnCloseOrder" style="display: none;">Fechar Pedido</button>
+        </section>
+    </main>
+    <script src="./src/js/OrderService.js"></script>
+    <script src="./src/js/script.js"></script>
+</body>
+</html>
