@@ -12,16 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnCloseOrder = document.getElementById('btnCloseOrder');
     const btnToggleProductRegistration = document.getElementById('btnToggleProductRegistration');
     const productRegistrationSection = document.getElementById('productRegistrationSection');
-
-
+    const btnGenerateReport = document.getElementById('btnGenerateReport');
 
     btnToggleProductRegistration.addEventListener('click', () => {
-        if (productRegistrationSection.style.display === 'none') {
-            productRegistrationSection.style.display = 'block';
-        } else {
-            productRegistrationSection.style.display = 'none';
-        }
-    })
+        productRegistrationSection.style.display = productRegistrationSection.style.display === 'none' ? 'block' : 'none';
+    });
 
     function renderAvailableProducts() {
         availableProductsList.innerHTML = '';
@@ -29,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
         productSelect.innerHTML = '';
         orderService.listProducts().forEach(product => {
             const li = document.createElement('li');
-            li.textContent = `${product.name} - ${product.description}`;
+            li.textContent = `ID: ${product.id} - ${product.name} - ${product.description}`;
             availableProductsList.appendChild(li);
 
             const option = document.createElement('option');
             option.value = product.id;
-            option.textContent = `${product.name} - ${product.description}`;
+            option.textContent = `ID: ${product.id} - ${product.name} - ${product.description}`;
             productSelect.appendChild(option);
         });
     }
@@ -128,4 +123,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     renderOrders();
+
+    async function generateReport() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(20);
+        doc.text('Relatório De Pedidos Fechados', 10, 10);
+        doc.setFontSize(12);
+
+        const closeOrders = orderService.orders.filter(order => order.status === 'Fechado');
+
+        if (closeOrders.length === 0) {
+            doc.text('Nenhum Pedido Fechado Encontado.', 10, 20);
+        } else {
+            let y = 20;
+            closeOrders.forEach(order => {
+                doc.text(`Pedido #${order.id} - Status: ${order.status}`, 18, y);
+                y += 10;
+
+                order.products.forEach(product => {
+                    doc.text(`  - ${product.name} - ${product.description}`, 10, y);
+                    y += 10;
+                });
+                y += 5;
+            });
+        }
+
+        doc.save("relatorio_pedidos_fechados.pdf");
+    }
+    
+    btnGenerateReport.addEventListener('click', generateReport);
+
 });
