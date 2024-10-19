@@ -1,35 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gerenciamento de Pedidos</title>
     <link rel="stylesheet" href="./src/css/style.css">
 </head>
+
 <body>
     <header>
         <h1>Gerenciamento De Pedidos</h1>
-        <button id="btnNewOrder">Iniciar Novo Pedido</button>
+        <div>
+            <button id="btnNewOrder">Iniciar Novo Pedido</button>
+            <button id="btnToggleProductRegistration">Cadastrar Produto</button>
+        </div>
     </header>
 
     <main>
-        <section id="orderSection">
-            <h2>Pedidos</h2>
-            <ul id="ordersList">
-            </ul>
-        </section>
+        <div class="container">
+            <aside class="left-sidebar">
+                <section id="availableProductsSection">
+                    <h2>Produtos Disponíveis</h2>
+                    <ul id="availableProductsList"></ul>
+                </section>
+            </aside>
 
-        <section id="orderDetalisSection" style="display: none;">
-            <h2>Detalhes do Pedido</h2>
-            <p id="orderStatus"></p>
-            <input type="text" name="" id="productNome" placeholder="Nome Do Pedido">
-            <input type="text" name="" id="productDescription" placeholder="Descrição do Produto">
-            <button id="btnAddProduct">Adicionar Produto</button>
-            <ul id="productsList"></ul>
-            <button id="btnCloseOrder" style="display: none;">Fechar Pedido</button>
-        </section>
+            <div class="main-content">
+                <section id="productRegistrationSection" style="display: none;">
+                    <h2>Cadastro de Produtos</h2>
+                    <input type="text" id="newProductName" placeholder="Nome do Produto">
+                    <input type="text" id="newProductDescription" placeholder="Descrição do Produto">
+                    <button id="btnRegisterProduct">Cadastrar Produto</button>
+                </section>
+
+                <section id="orderDetalisSection" style="display: none;">
+                    <h2>Detalhes Do Pedido <span id="orderIdDisplay"></span></h2>
+                    <p id="orderStatus"></p>
+                    <div id="productSelection">
+                        <select id="productSelect"></select>
+                        <button id="btnAddProductToOrder">Adicionar Produto</button>
+                    </div>
+                    <ul id="productsList"></ul>
+                    <button id="btnCloseOrder" style="display: none;">Fechar Pedido</button>
+                </section>
+            </div>
+
+            <aside class="right-sidebar">
+                <section id="orderSection">
+                    <h2>Pedidos</h2>
+                    <ul id="ordersList"></ul>
+                </section>
+            </aside>
+        </div>
     </main>
+
     <script src="./src/js/OrderService.js"></script>
     <script src="./src/js/script.js"></script>
 </body>
+
 </html>

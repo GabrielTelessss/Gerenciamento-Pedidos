@@ -13,7 +13,7 @@ describe('OrderService', () => {
     expect(newOrder).toEqual({
       id: 1,
       products: [],
-      status: 'open'
+      status: 'Aberto'
     });
   });
 
@@ -39,13 +39,13 @@ describe('OrderService', () => {
     orderService.createNewOrder();
     orderService.addProductToOrder('Product 1', 'Description 1');
     orderService.closeOrder();
-    expect(orderService.currentOrder.status).toBe('closed');
+    expect(orderService.currentOrder.status).toBe('Fechado');
   });
 
   test('closeOrder não deve fechar o pedido atual se não tiver produtos', () => {
     orderService.createNewOrder();
     orderService.closeOrder();
-    expect(orderService.currentOrder.status).toBe('open');
+    expect(orderService.currentOrder.status).toBe('Aberto');
   });
 
   test('listOrders deve retornar todos os pedidos', async () => {
