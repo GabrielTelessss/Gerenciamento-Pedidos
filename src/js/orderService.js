@@ -15,18 +15,20 @@ class OrderService {
         const newOrder = {
             id: this.orders.length + 1,
             products: [],
-            status: 'Aberto'
+            status: 'Aberto',
+            total: 0
         };
         this.orders.push(newOrder);
         this.currentOrder = newOrder;
         return newOrder;
     }
 
-    registerProduct(name, description) {
+    registerProduct(name, description, price) {
         const newProduct = {
             id: this.products.length + 1,
             name: name,
-            description: description
+            description: description,
+            price: price
         };
         this.products.push(newProduct);
         return newProduct;
@@ -36,7 +38,8 @@ class OrderService {
         if (this.currentOrder && this.currentOrder.status === 'Aberto') {
             const product = this.products.find(p => p.id === productId);
             if (product) {
-                this.currentOrder.products.push({...product});
+                this.currentOrder.products.push({ ...product });
+                this.currentOrder.total += product.price;
                 return true;
             }
         }
@@ -49,7 +52,16 @@ class OrderService {
 
     removeProductFromOrder(index) {
         if (this.currentOrder && this.currentOrder.status === 'Aberto') {
+            const product = this.currentOrder.products[index];
+            this.currentOrder.total -= product.price;
             this.currentOrder.products.splice(index, 1);
+        }
+    }
+
+    removeOrder(orderId) {
+        const orderIndex = this.orders.findIndex(order => order.id === orderId);
+        if (orderIndex > -1) {
+            this.orders.splice(orderIndex, 1);
         }
     }
 
@@ -60,7 +72,7 @@ class OrderService {
         }
         return false;
     }
-    
 }
+
 const orderService = new OrderService();
 module.exports = OrderService;

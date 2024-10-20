@@ -38,12 +38,14 @@
                     <h2>Cadastro de Produtos</h2>
                     <input type="text" id="newProductName" placeholder="Nome do Produto">
                     <input type="text" id="newProductDescription" placeholder="Descrição do Produto">
+                    <input type="number" id="newProductPrice" placeholder="Preço do Produto">
                     <button id="btnRegisterProduct">Cadastrar Produto</button>
                 </section>
 
                 <section id="orderDetailsSection" style="display: none;">
                     <h2>Detalhes Do Pedido <span id="orderIdDisplay"></span></h2>
                     <p id="orderStatus"></p>
+                    <p id="totalDisplay"></p>
                     <div id="productSelection">
                         <select id="productSelect"></select>
                         <button id="btnAddProductToOrder">Adicionar Produto</button>

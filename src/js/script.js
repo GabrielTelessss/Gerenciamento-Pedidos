@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnToggleProductRegistration = document.getElementById('btnToggleProductRegistration');
     const productRegistrationSection = document.getElementById('productRegistrationSection');
     const btnGenerateReport = document.getElementById('btnGenerateReport');
+    const totalDisplay = document.getElementById('totalDisplay');
 
     btnToggleProductRegistration.addEventListener('click', () => {
         productRegistrationSection.style.display = productRegistrationSection.style.display === 'none' ? 'block' : 'none';
@@ -24,12 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
         productSelect.innerHTML = '';
         orderService.listProducts().forEach(product => {
             const li = document.createElement('li');
-            li.textContent = `ID: ${product.id} - ${product.name} - ${product.description}`;
+            li.textContent = `ID: ${product.id} - ${product.name} - ${product.description} - R$ ${product.price.toFixed(2)}`;
             availableProductsList.appendChild(li);
 
             const option = document.createElement('option');
             option.value = product.id;
-            option.textContent = `ID: ${product.id} - ${product.name} - ${product.description}`;
+            option.textContent = `ID: ${product.id} - ${product.name} - ${product.description} - R$ ${product.price.toFixed(2)}`;
             productSelect.appendChild(option);
         });
     }
@@ -40,6 +41,22 @@ document.addEventListener('DOMContentLoaded', function () {
             orders.forEach(order => {
                 const li = document.createElement('li');
                 li.textContent = `Pedido #${order.id} - ${order.status}`;
+
+                if (order.status === 'Aberto') {
+                    const btnRemoveOrder = document.createElement('button');
+                    btnRemoveOrder.textContent = 'Remover';
+                    btnRemoveOrder.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        orderService.removeOrder(order.id);
+                        renderOrders();
+
+                        if(orderService.currentOrder && orderService.currentOrder.id === order.id){
+                            showOrderDetails(null)
+                        }
+                    });
+                    li.appendChild(btnRemoveOrder);
+                }
+
                 li.addEventListener('click', () => showOrderDetails(order));
                 ordersList.appendChild(li);
             });
@@ -49,21 +66,29 @@ document.addEventListener('DOMContentLoaded', function () {
     btnRegisterProduct.addEventListener('click', () => {
         const productName = newProductNameInput.value.trim();
         const productDescription = newProductDescriptionInput.value.trim();
+        const productPrice = parseFloat(document.getElementById('newProductPrice').value.trim());
 
-        if (productName && productDescription && productName.length <= 50 && productDescription.length <= 50) {
-            orderService.registerProduct(productName, productDescription);
+        if (productName && productDescription && !isNaN(productPrice) && productName.length <= 50 && productDescription.length <= 50) {
+            orderService.registerProduct(productName, productDescription, productPrice);
             newProductNameInput.value = '';
             newProductDescriptionInput.value = '';
+            document.getElementById('newProductPrice').value = '';
             renderAvailableProducts();
         } else {
-            alert('Por favor, preencha o nome e a descrição do produto (máximo 50 caracteres cada).');
+            alert('Por favor, preencha todos os campos (máximo 50 caracteres cada).');
         }
     });
 
     function showOrderDetails(order) {
+        if(!order){
+            orderDetailsSection.style.display = 'none';
+            return
+        }
+
         orderService.currentOrder = order;
         orderDetailsSection.style.display = 'block';
         orderStatus.textContent = `Status: ${order.status}`;
+        totalDisplay.textContent = `Total: R$ ${order.total.toFixed(2)}`;
         productsList.innerHTML = '';
 
         const orderIdDisplay = document.getElementById('orderIdDisplay');
@@ -73,17 +98,17 @@ document.addEventListener('DOMContentLoaded', function () {
             orderStatus.style.color = 'red';
             btnAddProductToOrder.style.display = 'none';
             btnCloseOrder.style.display = 'none';
-            productSelect.style.display = 'none'
+            productSelect.style.display = 'none';
         } else {
             orderStatus.style.color = 'green';
             btnAddProductToOrder.style.display = 'block';
             btnCloseOrder.style.display = order.products.length > 0 ? 'block' : 'none';
-            productSelect.style.display = 'block'
+            productSelect.style.display = 'block';
         }
 
         order.products.forEach((product, index) => {
             const li = document.createElement('li');
-            li.textContent = `${product.name} - ${product.description}`;
+            li.textContent = `${product.name} - ${product.description} - R$ ${product.price.toFixed(2)}`;
 
             if (order.status !== 'Fechado') {
                 const btnRemove = document.createElement('button');
@@ -122,44 +147,42 @@ document.addEventListener('DOMContentLoaded', function () {
         showOrderDetails(orderService.currentOrder);
     });
 
-    renderOrders();
-
     async function generateReport() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const filterSelect = document.getElementById('reportFilter');
-        const filterValue = filterSelect.value; 
+        const filterValue = filterSelect.value;
 
         let filteredOrders;
-        switch (filterValue){
+        switch (filterValue) {
             case 'aberto':
                 filteredOrders = orderService.orders.filter(order => order.status === 'Aberto');
                 doc.text('Filtro: Pedidos Abertos', 10, 20);
-                break
+                break;
             case 'fechado':
                 filteredOrders = orderService.orders.filter(order => order.status === 'Fechado');
                 doc.text('Filtro: Pedidos Fechados', 10, 20);
-                break
+                break;
             default:
                 filteredOrders = orderService.orders;
                 doc.text('Filtro: Todos os Pedidos', 10, 20);
         }
 
-        if(filteredOrders.length === 0){
+        if (filteredOrders.length === 0) {
             doc.text('Nenhum Pedido Encontrado', 10, 30);
-        }else{
+        } else {
             let y = 30;
             filteredOrders.forEach(order => {
-                doc.text(`Pedido #${order.id} - Status ${order.status}`, 10, y);
+                doc.text(`Pedido #${order.id} - Status: ${order.status}`, 10, y);
                 y += 10;
 
-                order.products.forEach(product =>{
-                    doc.text(`- ${product.name} - ${product.description}`, 10, y);
+                order.products.forEach(product => {
+                    doc.text(`- ${product.name} - ${product.description} - R$ ${product.price.toFixed(2)}`, 10, y);
                     y += 10;
                 });
 
-                y +=5;
-
+                doc.text(`Total: R$ ${order.total.toFixed(2)}`, 10, y);
+                y += 15;
             });
         }
 
@@ -167,6 +190,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     btnGenerateReport.addEventListener('click', generateReport);
-    
 
+    renderOrders();
 });
