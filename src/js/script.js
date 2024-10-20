@@ -127,32 +127,46 @@ document.addEventListener('DOMContentLoaded', function () {
     async function generateReport() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        const filterSelect = document.getElementById('reportFilter');
+        const filterValue = filterSelect.value; 
 
-        doc.setFontSize(20);
-        doc.text('Relatório De Pedidos Fechados', 10, 10);
-        doc.setFontSize(12);
+        let filteredOrders;
+        switch (filterValue){
+            case 'aberto':
+                filteredOrders = orderService.orders.filter(order => order.status === 'Aberto');
+                doc.text('Filtro: Pedidos Abertos', 10, 20);
+                break
+            case 'fechado':
+                filteredOrders = orderService.orders.filter(order => order.status === 'Fechado');
+                doc.text('Filtro: Pedidos Fechados', 10, 20);
+                break
+            default:
+                filteredOrders = orderService.orders;
+                doc.text('Filtro: Todos os Pedidos', 10, 20);
+        }
 
-        const closeOrders = orderService.orders.filter(order => order.status === 'Fechado');
-
-        if (closeOrders.length === 0) {
-            doc.text('Nenhum Pedido Fechado Encontado.', 10, 20);
-        } else {
-            let y = 20;
-            closeOrders.forEach(order => {
-                doc.text(`Pedido #${order.id} - Status: ${order.status}`, 18, y);
+        if(filteredOrders.length === 0){
+            doc.text('Nenhum Pedido Encontrado', 10, 30);
+        }else{
+            let y = 30;
+            filteredOrders.forEach(order => {
+                doc.text(`Pedido #${order.id} - Status ${order.status}`, 10, y);
                 y += 10;
 
-                order.products.forEach(product => {
-                    doc.text(`  - ${product.name} - ${product.description}`, 10, y);
+                order.products.forEach(product =>{
+                    doc.text(`- ${product.name} - ${product.description}`, 10, y);
                     y += 10;
                 });
-                y += 5;
+
+                y +=5;
+
             });
         }
 
-        doc.save("relatorio_pedidos_fechados.pdf");
+        doc.save("Relatorio_Pedidos.pdf");
     }
-    
+
     btnGenerateReport.addEventListener('click', generateReport);
+    
 
 });

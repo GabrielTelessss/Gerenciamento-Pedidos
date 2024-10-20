@@ -29,6 +29,36 @@ header div{
     gap: 10px;
 }
 
+#reportFilter{
+    background-color: #f8f9fa;
+    color: #333;
+    padding: 10px 15px;
+    margin: 10px 0;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#reportFilter:hover{
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+#reportFilter:focus{
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+}
+
+#reportFilter option {
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+}
+
 h1 {
     font-size: 2.5rem;
     color: #333;
