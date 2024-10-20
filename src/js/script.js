@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const newProductNameInput = document.getElementById('newProductName');
     const newProductDescriptionInput = document.getElementById('newProductDescription');
     const orderStatus = document.getElementById('orderStatus');
-    const orderDetalisSection = document.getElementById('orderDetalisSection');
+    const orderDetailsSection = document.getElementById('orderDetailsSection');
     const btnRegisterProduct = document.getElementById('btnRegisterProduct');
     const availableProductsList = document.getElementById('availableProductsList');
     const btnCloseOrder = document.getElementById('btnCloseOrder');
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showOrderDetails(order) {
         orderService.currentOrder = order;
-        orderDetalisSection.style.display = 'block';
+        orderDetailsSection.style.display = 'block';
         orderStatus.textContent = `Status: ${order.status}`;
         productsList.innerHTML = '';
 
