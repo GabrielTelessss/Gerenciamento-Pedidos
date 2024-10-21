@@ -14,10 +14,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const productRegistrationSection = document.getElementById('productRegistrationSection');
     const btnGenerateReport = document.getElementById('btnGenerateReport');
     const totalDisplay = document.getElementById('totalDisplay');
+    const btnCloseProductRegistration = document.getElementById('btnCloseProductRegistration');
+
+
 
     btnToggleProductRegistration.addEventListener('click', () => {
         productRegistrationSection.style.display = productRegistrationSection.style.display === 'none' ? 'block' : 'none';
     });
+
+    btnCloseProductRegistration.addEventListener('click', () =>{
+        productRegistrationSection.style.display = 'none';
+    })
+    
 
     function renderAvailableProducts() {
         availableProductsList.innerHTML = '';
