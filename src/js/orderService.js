@@ -3,6 +3,7 @@ class OrderService {
         this.orders = [];
         this.currentOrder = null;
         this.products = [];
+        this.orderIdCounter = 1;
     }
 
     listOrders() {
@@ -13,7 +14,7 @@ class OrderService {
 
     createNewOrder() {
         const newOrder = {
-            id: this.orders.length + 1,
+            id: this.orderIdCounter++,
             products: [],
             status: 'Aberto',
             total: 0
